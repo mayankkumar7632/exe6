@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login - CS Dept</title>
-  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
   <nav class="navbar">
-    <a href="/" class="logo">CS <span>Dept</span></a>
+    <a href="../" class="logo">CS <span>Dept</span></a>
     <ul class="nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/pages/about.html">About</a></li>
+      <li><a href="../">Home</a></li>
+      <li><a href="../pages/about.html">About</a></li>
     </ul>
     <div class="nav-auth" id="nav-auth"></div>
   </nav>
@@ -37,7 +37,7 @@
       </form>
 
       <div class="form-footer">
-        Don't have an account? <a href="/pages/register.html">Register here</a>
+        Don't have an account? <a href="register.html">Register here</a>
       </div>
     </div>
   </div>
@@ -46,7 +46,7 @@
     <p>&copy; 2026 Department of Computer Science. All rights reserved.</p>
   </footer>
 
-  <script src="/js/main.js"></script>
+  <script src="../js/main.js"></script>
   <script>
     const form = document.getElementById("login-form");
     const errorMsg = document.getElementById("error-msg");
@@ -81,7 +81,7 @@
           setUser(data.user);
           successMsg.textContent = "Login successful! Redirecting...";
           successMsg.style.display = "block";
-          setTimeout(() => (window.location.href = "/"), 1000);
+          setTimeout(() => (window.location.href = "../"), 1000);
         }
       } catch (err) {
         errorMsg.textContent = "Network error. Please try again.";
@@ -92,7 +92,7 @@
       btn.disabled = false;
     });
 
-    if (getUser()) window.location.href = "/";
+    if (getUser()) window.location.href = "../";
   </script>
 </body>
 </html>

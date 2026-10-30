@@ -5,6 +5,21 @@ function getUser() {
   return data ? JSON.parse(data) : null;
 }
 
+// Converts an absolute path like "/pages/login.html" into a path
+// relative to the current page, so it also works when hosted
+// under a subdirectory (e.g. GitHub Pages: /repo/...)
+function withBase(path) {
+  const isRootPage =
+    window.location.pathname === "/" ||
+    window.location.pathname.endsWith("/index.html") ||
+    window.location.pathname.endsWith("/");
+  const base = isRootPage ? "" : "../";
+  if (path === "/") return base === "" ? "./" : "../";
+  let clean = path.replace(/\/+$/, "") || "/";
+  if (clean.startsWith("/")) clean = clean.slice(1);
+  return base + clean;
+}
+
 function setUser(user) {
   localStorage.setItem("user", JSON.stringify(user));
 }
@@ -25,8 +40,8 @@ function updateNavbar() {
     `;
   } else {
     navAuth.innerHTML = `
-      <a href="/pages/login.html" class="btn btn-outline">Login</a>
-      <a href="/pages/register.html" class="btn btn-primary">Register</a>
+      <a href="${withBase("/pages/login.html")}" class="btn btn-outline">Login</a>
+      <a href="${withBase("/pages/register.html")}" class="btn btn-primary">Register</a>
     `;
   }
 }
@@ -36,7 +51,7 @@ async function logout() {
     await fetch(`${API_BASE}/logout`, { method: "POST", credentials: "include" });
   } catch (e) {}
   clearUser();
-  window.location.href = "/";
+  window.location.href = withBase("/");
 }
 
 function flash(message, type) {
@@ -54,10 +69,21 @@ function flash(message, type) {
 
 function setActiveNav() {
   const path = window.location.pathname;
+  // Normalize trailing slash so "/" and "/index.html" style comparisons work
+  const current = path !== "/" && path.endsWith("/")
+    ? path.slice(0, -1)
+    : path;
   document.querySelectorAll(".nav-links a").forEach((link) => {
     link.classList.remove("active");
-    if (link.getAttribute("href") === path) link.classList.add("active");
-    if (path === "/" && link.getAttribute("href") === "/") link.classList.add("active");
+    const href = link.getAttribute("href") || "";
+    const linkPath = href.startsWith("/")
+      ? href
+      : new URL(href, window.location.href).pathname;
+    const normalizedLink =
+      linkPath !== "/" && linkPath.endsWith("/")
+        ? linkPath.slice(0, -1)
+        : linkPath;
+    if (normalizedLink === current) link.classList.add("active");
   });
 }
 
